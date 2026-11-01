@@ -138,8 +138,9 @@ export default function BlueprintBackground() {
       <svg key={sig} width={W} height={H} className="absolute inset-0">
         {/* A dimension line down the left edge, with a tick where each section begins. */}
         {spineBottom > spineTop && <Line d={`M${gx} ${spineTop} V${spineBottom}`} y={spineTop} len={spineBottom - spineTop} {...common} o={0.55} />}
-        {tops.slice(1).map((t) => (
-          <Line key={t} d={`M${gx - 6} ${t} H${gx + 6}`} y={t} len={vh * 0.12} {...common} o={0.7} />
+        {tops.slice(1).map((t, i) => (
+          // Index in the key: two sections can briefly measure at the same top (e.g. 0 before styles load).
+          <Line key={`${i}-${t}`}d={`M${gx - 6} ${t} H${gx + 6}`} y={t} len={vh * 0.12} {...common} o={0.7} />
         ))}
 
         {/* Measuring lines around the hero photo: one along the bottom, one up the left (when there is room for it). */}
