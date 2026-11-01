@@ -1,21 +1,26 @@
 "use client";
 
-import { useRef, type ReactNode } from "react";
+import { useEffect, type ReactNode } from "react";
 import * as m from "motion/react-m";
-import { useReducedMotion, useScroll, useTransform } from "motion/react";
+import { animate, useMotionValue, useReducedMotion, useTransform } from "motion/react";
 
 /**
  * The hero photo as a blueprint that develops as you scroll. Three layers slide at their own rates: the photo (zooms
  * back to its true size), a blue tint with a drafting grid, and the measuring marks, which drift outward and fade.
- * Progress runs from the frame's bottom edge reaching the bottom of the screen to it reaching 40% down, so on a
- * desktop it is nearly at the start when the page opens and on a phone it only starts once the photo scrolls into view.
+ * It plays by itself when the page opens (a short pause, then about 2.6 s), not on the scrollbar.
  * With reduced motion the photo is shown fully developed and still.
  */
 export default function HeroFrame({ photo, badge }: { photo: ReactNode; badge: ReactNode }) {
-  const ref = useRef<HTMLDivElement>(null);
   const reduce = !!useReducedMotion();
-  const { scrollYProgress } = useScroll({ target: ref, offset: ["end end", "end 40%"] });
-  const p = useTransform(scrollYProgress, (v) => (reduce ? 1 : v));
+  const p = useMotionValue(reduce ? 1 : 0);
+  useEffect(() => {
+    if (reduce) {
+      p.set(1);
+      return;
+    }
+    const a = animate(p, 1, { duration: 2.6, delay: 0.5, ease: [0.4, 0, 0.2, 1] });
+    return () => a.stop();
+  }, [reduce, p]);
 
   const sheet = useTransform(p, [0, 1], [0.9, 0]);
   const tint = useTransform(p, [0, 1], [0.75, 0]);
@@ -25,7 +30,7 @@ export default function HeroFrame({ photo, badge }: { photo: ReactNode; badge: R
   const marksOut = useTransform(p, [0, 1], [1, 1.12]);
 
   return (
-    <div ref={ref} className="unveil relative aspect-[5/4] overflow-hidden bg-navy sm:aspect-[16/10] lg:aspect-[4/5]">
+    <div className="unveil relative aspect-[5/4] overflow-hidden bg-navy sm:aspect-[16/10] lg:aspect-[4/5]">
       <m.div className="absolute inset-0" style={{ scale: zoom }}>
         {photo}
       </m.div>
