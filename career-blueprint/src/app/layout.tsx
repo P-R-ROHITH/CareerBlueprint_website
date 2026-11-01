@@ -6,11 +6,14 @@ import MotionProvider from "@/components/motion/MotionProvider";
 import FloatingWhatsApp from "@/components/layout/FloatingWhatsApp";
 import BlueprintBackground from "@/components/blueprint/BlueprintBackground";
 import Journey from "@/components/journey/Journey";
-import { site } from "@/config/site";
+import { site, siteUrl } from "@/config/site";
 
 export const metadata: Metadata = {
   title: { default: `${site.name} — ${site.tagline}`, template: `%s | ${site.name}` },
   description: site.description,
+  metadataBase: new URL(siteUrl),
+  openGraph: { siteName: site.name, type: "website", locale: "en_IN" },
+  twitter: { card: "summary_large_image" },
 };
 
 export const viewport: Viewport = { themeColor: "#102A56" };

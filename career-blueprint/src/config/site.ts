@@ -28,3 +28,9 @@ export const legalLinks = [
   { label: "Privacy Policy", href: "/privacy-policy" },
   { label: "Terms & Conditions", href: "/terms-and-conditions" },
 ] as const;
+
+/** The live address. Set NEXT_PUBLIC_SITE_URL when the real domain goes live; until then the preview address is used. */
+export const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://careerblueprintbeta1.netlify.app";
+
+/** Every public page, for the sitemap. */
+export const pages = ["/", "/programs", "/programs/interview-training", "/programs/resume-preparation", "/about", "/contact", "/privacy-policy", "/terms-and-conditions"];
