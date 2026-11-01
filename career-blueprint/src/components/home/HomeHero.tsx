@@ -1,5 +1,6 @@
 import Button from "@/components/ui/Button";
 import Photo from "@/components/ui/Photo";
+import HeroFrame from "./HeroFrame";
 import { contact, whatsappLink } from "@/config/site";
 
 export default function HomeHero() {
@@ -34,12 +35,14 @@ export default function HomeHero() {
         <div data-bp="hero-photo" className="relative lg:justify-self-end lg:w-full lg:max-w-[34rem]">
           <span aria-hidden className="pointer-events-none absolute -inset-10 -z-10 bg-[radial-gradient(closest-side,rgb(37_99_235/0.14),transparent)]" />
           <span aria-hidden className="absolute -top-3 -right-3 hidden h-full w-full border border-gold lg:block" />
-          <div className="unveil relative aspect-[5/4] overflow-hidden bg-navy sm:aspect-[16/10] lg:aspect-[4/5]">
-            <Photo name="hero" priority sizes="(min-width: 1024px) 34rem, 100vw" />
-            <p className="absolute bottom-4 left-4 border border-white/40 bg-navy/70 px-4 py-2.5 text-sm font-medium text-white supports-[backdrop-filter]:bg-white/15 supports-[backdrop-filter]:backdrop-blur-md supports-[backdrop-filter]:backdrop-saturate-150 sm:bottom-5 sm:left-5">
-              The Blueprint to Your Dream Job.
-            </p>
-          </div>
+          <HeroFrame
+            photo={<Photo name="hero" priority sizes="(min-width: 1024px) 34rem, 100vw" />}
+            badge={
+              <p className="absolute bottom-4 left-4 border border-white/40 bg-navy/70 px-4 py-2.5 text-sm font-medium text-white supports-[backdrop-filter]:bg-white/15 supports-[backdrop-filter]:backdrop-blur-md supports-[backdrop-filter]:backdrop-saturate-150 sm:bottom-5 sm:left-5">
+                The Blueprint to Your Dream Job.
+              </p>
+            }
+          />
         </div>
       </div>
     </section>
