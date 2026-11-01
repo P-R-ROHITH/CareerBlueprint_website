@@ -58,10 +58,32 @@ function measure(): Layout {
 }
 
 /** One line that draws itself as you scroll: it starts when y reaches 88% down the screen and is whole `len` px of scrolling later. */
-function Line({ d, y, len, scrollY, vh, still, o = 0.22 }: { d: string; y: number; len: number; scrollY: MotionValue<number>; vh: number; still: boolean; o?: number }) {
+function Line({ d, y, len, scrollY, vh, still, o = 0.6 }: { d: string; y: number; len: number; scrollY: MotionValue<number>; vh: number; still: boolean; o?: number }) {
   const p = useTransform(scrollY, (v) => (still ? 1 : clamp01((v + vh * 0.88 - y) / len)));
   const opacity = useTransform(p, (v) => (v > 0 ? o : 0));
-  return <m.path d={d} fill="none" stroke={INK} strokeWidth={1.25} strokeLinecap="round" strokeLinejoin="round" vectorEffect="non-scaling-stroke" style={{ pathLength: p, opacity }} />;
+  return <m.path d={d} fill="none" stroke={INK} strokeWidth={1.75} strokeLinecap="round" strokeLinejoin="round" vectorEffect="non-scaling-stroke" style={{ pathLength: p, opacity }} />;
+}
+
+const GRID = "rgba(37,99,235,";
+const gridLines = (a: number) =>
+  `linear-gradient(${GRID}${a}) 1px, transparent 1px), linear-gradient(90deg, ${GRID}${a}) 1px, transparent 1px)`;
+
+/** The graph paper: it unrolls down the page as you scroll, with a bright edge on the line it has reached. */
+function Grid({ scrollY, vh, H, still }: { scrollY: MotionValue<number>; vh: number; H: number; still: boolean }) {
+  const h = useTransform(scrollY, (v) => (still ? H : Math.min(H, Math.max(0, v + vh * 0.88))));
+  return (
+    <m.div className="absolute top-0 left-0 w-full overflow-hidden" style={{ height: h }}>
+      <div
+        className="absolute top-0 left-0 w-full"
+        style={{
+          height: H,
+          backgroundImage: `${gridLines(0.3)}, ${gridLines(0.14)}`,
+          backgroundSize: "240px 240px, 240px 240px, 48px 48px, 48px 48px",
+        }}
+      />
+      {!still && <div className="absolute inset-x-0 bottom-0 h-px bg-royal/70 shadow-[0_0_10px_2px_rgb(37_99_235/0.45)]" />}
+    </m.div>
+  );
 }
 
 /** Small technical sketches, each drawn in a 120 x 84 box with a dimension line, one per service. */
@@ -112,11 +134,12 @@ export default function BlueprintBackground() {
 
   return (
     <div aria-hidden className="pointer-events-none absolute top-0 left-0 z-[1] w-full overflow-hidden" style={{ height: H }}>
+      <Grid scrollY={scrollY} vh={vh} H={H} still={reduce} />
       <svg key={sig} width={W} height={H} className="absolute inset-0">
         {/* A dimension line down the left edge, with a tick where each section begins. */}
-        {spineBottom > spineTop && <Line d={`M${gx} ${spineTop} V${spineBottom}`} y={spineTop} len={spineBottom - spineTop} {...common} o={0.2} />}
+        {spineBottom > spineTop && <Line d={`M${gx} ${spineTop} V${spineBottom}`} y={spineTop} len={spineBottom - spineTop} {...common} o={0.55} />}
         {tops.slice(1).map((t) => (
-          <Line key={t} d={`M${gx - 6} ${t} H${gx + 6}`} y={t} len={vh * 0.12} {...common} o={0.3} />
+          <Line key={t} d={`M${gx - 6} ${t} H${gx + 6}`} y={t} len={vh * 0.12} {...common} o={0.7} />
         ))}
 
         {/* Measuring lines around the hero photo: one along the bottom, one up the left (when there is room for it). */}
@@ -146,7 +169,7 @@ export default function BlueprintBackground() {
         {/* Drafting arcs in the corner of the About section. */}
         {about && (
           <g transform={`translate(${W - 40} ${about.y + about.h - 40})`}>
-            <Line d="M-70 0 A70 70 0 0 1 0 -70 M-110 0 A110 110 0 0 1 0 -110 M-8 0 H8 M0 -8 V8" y={about.y + about.h * 0.35} len={vh * 0.5} {...common} o={0.3} />
+            <Line d="M-70 0 A70 70 0 0 1 0 -70 M-110 0 A110 110 0 0 1 0 -110 M-8 0 H8 M0 -8 V8" y={about.y + about.h * 0.35} len={vh * 0.5} {...common} o={0.7} />
           </g>
         )}
       </svg>

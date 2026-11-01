@@ -5,7 +5,6 @@ import { contact, whatsappLink } from "@/config/site";
 export default function HomeHero() {
   return (
     <section className="relative overflow-hidden bg-white">
-      <div aria-hidden className="hero-grid pointer-events-none absolute inset-0" />
       <div className="container-page relative grid items-center gap-10 py-10 md:py-14 lg:min-h-[calc(100svh-72px)] lg:grid-cols-[1.05fr_0.95fr] lg:gap-16 lg:py-10">
         <div>
           <h1 data-station="hero" className="display text-[clamp(1.95rem,3.7vw,3.3rem)] text-navy">
